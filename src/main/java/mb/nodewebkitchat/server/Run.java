@@ -23,19 +23,13 @@ public class Run {
             // Start webserver
             final ApplicationLoader applicationLoader = new ApplicationLoader();
             final HttpServlet httpServlet = new HttpServlet();
-            httpServlet.setEntryPointClassName("com.ponysdk.sample.trading.client.TradingSampleEntryPoint");
-            // final BootstrapServlet bootstrapServlet = new BootstrapServlet();
-            // bootstrapServlet.addStylesheet("css/sample.less");
-            // bootstrapServlet.addStylesheet("css/ponysdk.less");
-            // bootstrapServlet.addJavascript("script/less.js");
-
+            httpServlet.setEntryPointClassName("mb.nodewebkitchat.client.NWCEntryPoint");
             final Main main = new Main();
             main.setApplicationContextName("chat");
             main.setPort(8088);
             main.setHttpServlet(httpServlet);
             main.setHttpSessionListener(applicationLoader);
             main.setServletContextListener(applicationLoader);
-            // main.setBootstrapServlet(bootstrapServlet);
             main.start();
 
         } catch (final Throwable e) {

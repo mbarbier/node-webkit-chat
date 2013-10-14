@@ -4,6 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="lib" path="libs/logging/slf4j-api.jar"/>
 	<classpathentry kind="lib" path="libs/jetty/geronimo-servlet_3.0_spec.jar"/>
-	<classpathentry kind="lib" path="libs/ponysdk/ponysdk-0.7.jar"/>
+	<classpathentry kind="lib" path="libs/ponysdk/ponysdk-0.7.jar" sourcepath="libs/ponysdk/ponysdk-0.7-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
