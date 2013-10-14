@@ -1,0 +1,65 @@
+apply plugin: 'java'
+
+sourceCompatibility = 1.6
+version = '0.1'
+
+
+repositories {
+	flatDir {
+		dirs "$rootDir/libs/ponysdk"
+	}
+	mavenCentral()
+	maven {
+		url "https://github.com/PonySDK/Maven/raw/master/ext"
+	}
+}
+
+configurations {
+	json
+	logback
+	sl4j
+	jetty
+	ponysdk
+
+	compile {
+		extendsFrom sl4j, ponysdk
+	}
+
+	runtime {
+		extendsFrom sl4j, logback, jetty, ponysdk, json
+	}
+
+	dependencies {
+		ponysdk ':ponysdk:0.7'
+		json 'org.json:json:20090211'
+		sl4j 'org.slf4j:slf4j-api:1.6.2'
+		sl4j 'org.slf4j:log4j-over-slf4j:1.6.4'
+		sl4j 'ch.qos.logback:logback-classic:1.0.0'
+		sl4j 'org.slf4j:jcl-over-slf4j:1.6.4'
+		logback 'ch.qos.logback:logback-core:1.0.13'
+		logback 'ch.qos.logback:logback-classic:1.0.13'
+		jetty 'org.eclipse.jetty:jetty-server:8.1.4.v20120524'
+		jetty 'org.eclipse.jetty:jetty-servlet:8.1.4.v20120524'
+		jetty 'org.eclipse.jetty:jetty-webapp:8.1.4.v20120524'
+		jetty 'org.eclipse.jetty:jetty-servlets:8.1.4.v20120524'
+		jetty 'org.eclipse.jetty:jetty-websocket:8.1.4.v20120524'
+		jetty 'org.apache.geronimo.specs:geronimo-servlet_3.0_spec:1.0'
+	}
+}
+
+def copyLib(configurations, dest) { 
+	println 'copying libs to #' + dest
+	copy {
+		from configurations
+		into dest
+		rename '(.*)-(.*).jar', '$1.jar'
+	}
+}
+
+task copyAllLibs << {
+	copyLib(configurations.json, 'libs/json');
+	copyLib(configurations.sl4j, 'libs/logging');
+	copyLib(configurations.logback, 'libs/logging');
+	copyLib(configurations.jetty, 'libs/jetty');
+}
+
