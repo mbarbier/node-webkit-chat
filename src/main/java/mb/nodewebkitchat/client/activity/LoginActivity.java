@@ -1,7 +1,9 @@
 
 package mb.nodewebkitchat.client.activity;
 
+import mb.nodewebkitchat.client.bootstrap.B;
 import mb.nodewebkitchat.client.place.LoggedPlace;
+import mb.nodewebkitchat.server.model.User;
 
 import com.ponysdk.core.activity.Activity;
 import com.ponysdk.core.socket.ConnectionListener;
@@ -18,6 +20,7 @@ public class LoginActivity extends NWCActivity implements PClickHandler, Connect
     private Activity next;
 
     private PTextBox login;
+    private PTextBox password;
     private PButton action;
     private String userName;
 
@@ -31,14 +34,28 @@ public class LoginActivity extends NWCActivity implements PClickHandler, Connect
         next = new UsersActivity();
 
         login = new PTextBox();
+        login.addStyleName(B.FORM_CONTROL);
         login.setPlaceholder("Login");
+
+        password = new PTextBox();
+        password.addStyleName(B.FORM_CONTROL);
+        password.setPlaceholder("Password");
 
         action = new PButton("Login");
         action.addClickHandler(this);
+        action.setStyleName(B.BTN);
+        action.addStyleName(B.BTN_P);
+        action.addStyleName(B.PULL_RIGHT);
 
         final PFlowPanel container = new PFlowPanel();
         container.add(login);
+        container.add(password);
         container.add(action);
+        container.addStyleName("login");
+
+        // final PSimplePanel p = new PSimplePanel();
+        // p.addStyleName("row");
+        // p.setWidget(container);
 
         return container;
     }
@@ -50,7 +67,7 @@ public class LoginActivity extends NWCActivity implements PClickHandler, Connect
 
         service.logon(userName);
 
-        next.start(world, new LoggedPlace(userName));
+        next.start(world, new LoggedPlace(new User(userName)));
     }
 
     @Override

@@ -5,5 +5,7 @@
 	<classpathentry kind="lib" path="libs/logging/slf4j-api.jar"/>
 	<classpathentry kind="lib" path="libs/jetty/geronimo-servlet_3.0_spec.jar"/>
 	<classpathentry kind="lib" path="libs/ponysdk/ponysdk-0.7.jar" sourcepath="libs/ponysdk/ponysdk-0.7-sources.jar"/>
+	<classpathentry kind="lib" path="libs/json/json.jar"/>
+	<classpathentry kind="src" path="/ponysdk"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

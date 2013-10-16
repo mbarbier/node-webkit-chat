@@ -8,6 +8,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import mb.nodewebkitchat.server.model.User;
+import mb.nodewebkitchat.server.model.event.NewMessageEvent;
 import mb.nodewebkitchat.server.model.event.UserConnectedEvent;
 import mb.nodewebkitchat.server.model.event.UserDisconnectedEvent;
 
@@ -60,5 +61,10 @@ public class ChatServiceImpl implements ChatService {
                 }
             }
         });
+    }
+
+    @Override
+    public void sendMessage(final User user, final String message) {
+        brodcastEvent(new NewMessageEvent(user, message));
     }
 }

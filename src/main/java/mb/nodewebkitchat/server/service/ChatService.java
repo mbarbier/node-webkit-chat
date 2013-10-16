@@ -15,4 +15,5 @@ public interface ChatService extends PonyService {
 
     public Collection<User> getConnectedUsers();
 
+    public void sendMessage(User user, String message);
 }

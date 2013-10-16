@@ -1,0 +1,14 @@
+{
+	"name": "nw-chat-demo",
+	"main": "http://mbarbier:8099/chat/index.html",
+	"node-remote": "*mbarbier:8099",
+	"single-instance": false,
+	"window": {
+		"title": "node-webkit pony chat",
+		"toolbar": false,
+		"frame": true,
+		"width": 400,
+		"height": 600,
+		"position": "mouse"
+	  }
+}

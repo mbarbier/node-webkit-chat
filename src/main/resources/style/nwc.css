@@ -1,0 +1,16 @@
+.pony-LoadingMessageBox {
+	position: absolute;
+}
+
+.alert {
+	margin-bottom: 0px;
+}
+
+.login {
+	padding: 5px;
+}
+
+.login input {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}

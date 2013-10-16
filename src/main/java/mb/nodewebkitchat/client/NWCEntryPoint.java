@@ -9,6 +9,8 @@ import com.ponysdk.core.main.EntryPoint;
 import com.ponysdk.core.place.Place;
 import com.ponysdk.ui.server.basic.PPusher;
 import com.ponysdk.ui.server.basic.PRootLayoutPanel;
+import com.ponysdk.ui.server.basic.PScript;
+import com.ponysdk.ui.server.basic.PScript.PScriptExecutionLogger;
 import com.ponysdk.ui.server.basic.PSimpleLayoutPanel;
 
 public class NWCEntryPoint implements EntryPoint {
@@ -32,5 +34,7 @@ public class NWCEntryPoint implements EntryPoint {
 
         final Activity activity = new LoginActivity();
         activity.start(root, Place.NOWHERE);
+
+        PScript.get().execute("process.versions['node-webkit']", new PScriptExecutionLogger());
     }
 }

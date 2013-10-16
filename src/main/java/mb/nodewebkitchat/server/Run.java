@@ -26,7 +26,7 @@ public class Run {
             httpServlet.setEntryPointClassName("mb.nodewebkitchat.client.NWCEntryPoint");
             final Main main = new Main();
             main.setApplicationContextName("chat");
-            main.setPort(8088);
+            main.setPort(8099);
             main.setHttpServlet(httpServlet);
             main.setHttpSessionListener(applicationLoader);
             main.setServletContextListener(applicationLoader);
