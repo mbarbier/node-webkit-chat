@@ -6,14 +6,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 import mb.nodewebkitchat.client.bootstrap.B;
+import mb.nodewebkitchat.client.nodewebkit.NodeWebkit;
+import mb.nodewebkitchat.client.nodewebkit.NodeWebkit.Handler;
 import mb.nodewebkitchat.client.place.LoggedPlace;
+import mb.nodewebkitchat.server.model.Presence;
 import mb.nodewebkitchat.server.model.User;
+import mb.nodewebkitchat.server.model.event.NewCallEvent;
 import mb.nodewebkitchat.server.model.event.NewMessageEvent;
 import mb.nodewebkitchat.server.model.event.UserConnectedEvent;
 import mb.nodewebkitchat.server.model.event.UserDisconnectedEvent;
+import mb.nodewebkitchat.server.model.event.UserPresenceEvent;
+
+import org.json.JSONObject;
 
 import com.ponysdk.core.place.Place;
 import com.ponysdk.ui.server.basic.IsPWidget;
+import com.ponysdk.ui.server.basic.PComplexPanel;
 import com.ponysdk.ui.server.basic.PElement;
 import com.ponysdk.ui.server.basic.PFlowPanel;
 import com.ponysdk.ui.server.basic.PHTML;
@@ -69,7 +77,7 @@ public class UsersActivity extends NWCActivity implements PClickHandler {
         headerPanel.setFooterWidget(chatContainer);
 
         addChat();
-
+        addListener();
         return headerPanel;
     }
 
@@ -90,6 +98,34 @@ public class UsersActivity extends NWCActivity implements PClickHandler {
         });
 
         wrap.add(messageBox);
+    }
+
+    private void addListener() {
+        final NodeWebkit nodeWebkit = NodeWebkit.get();
+        if (nodeWebkit.isFunctional()) {
+            nodeWebkit.getWin().addHandler("minimize", new Handler() {
+
+                @Override
+                public void onEvent(final String type, final JSONObject data) {
+                    onMinimize();
+                }
+            });
+            nodeWebkit.getWin().addHandler("restore", new Handler() {
+
+                @Override
+                public void onEvent(final String type, final JSONObject data) {
+                    onRestore();
+                }
+            });
+        }
+    }
+
+    protected void onMinimize() {
+        service.updateUserPresence(me, Presence.AWAY);
+    }
+
+    protected void onRestore() {
+        service.updateUserPresence(me, Presence.CONNECTED);
     }
 
     protected void sendMessage() {
@@ -122,11 +158,52 @@ public class UsersActivity extends NWCActivity implements PClickHandler {
 
         final PElement u = new PElement("li");
         u.setStyleName(B.LIST_GROUP_ITEM);
-        u.add(new PHTML(user.name));
+        final PElement name = new PElement("span");
+        name.setInnerText(user.name);
+        final PElement presence = new PElement("span");
+        presence.setInnerHTML("&nbsp;");
+        presence.setStyleName(B.BADGE);
+        presence.addStyleName(B.PULL_RIGHT);
+        presence.addDomHandler(new PClickHandler() {
+
+            @Override
+            public void onClick(final PClickEvent event) {
+                service.call(user);
+            }
+        }, PClickEvent.TYPE);
+
+        u.add(name);
+        u.add(presence);
         userContainer.add(u);
         entryByUser.put(user.name, u);
 
+        setPresence(presence, service.getUserPresence(user));
         refreshInfo();
+    }
+
+    private void removeEntry(final User user) {
+        if (me == null || me.name.equals(user.name)) return;
+
+        final PWidget remove = entryByUser.remove(user.name);
+        userContainer.remove(remove);
+
+        refreshInfo();
+    }
+
+    private void updateEntry(final User user, final Presence presence) {
+        if (me == null || me.name.equals(user.name)) return;
+
+        // Get the badge
+        final PComplexPanel w = (PComplexPanel) entryByUser.get(user.name);
+        final PWidget badge = w.getWidget(1);
+        setPresence(badge, presence);
+    }
+
+    private void setPresence(final PWidget presence, final Presence userPresence) {
+        for (final Presence p : Presence.values()) {
+            presence.removeStyleName(p.name());
+        }
+        presence.addStyleName(userPresence.name());
     }
 
     @Override
@@ -141,7 +218,21 @@ public class UsersActivity extends NWCActivity implements PClickHandler {
         } else if (data instanceof NewMessageEvent) {
             final NewMessageEvent e = (NewMessageEvent) data;
             addMessage(e.getUser(), e.getMessage());
+        } else if (data instanceof UserPresenceEvent) {
+            final UserPresenceEvent e = (UserPresenceEvent) data;
+            updateEntry(e.getUser(), e.getPresence());
+        } else if (data instanceof NewCallEvent) {
+            onCall();
         }
+    }
+
+    private void onCall() {
+        // focus window
+        final NodeWebkit nodeWebkit = NodeWebkit.get();
+        if (!nodeWebkit.isFunctional()) return;
+
+        // nodeWebkit.getWin().show();
+        nodeWebkit.getWin().restore();
     }
 
     private void addMessage(final User user, final String message) {
@@ -150,15 +241,6 @@ public class UsersActivity extends NWCActivity implements PClickHandler {
         final PHTML f = new PHTML();
         f.setHTML(h);
         messageContainer.add(f);
-    }
-
-    private void removeEntry(final User user) {
-        if (me == null || me.name.equals(user.name)) return;
-
-        final PWidget remove = entryByUser.remove(user.name);
-        userContainer.remove(remove);
-
-        refreshInfo();
     }
 
     private void refreshInfo() {

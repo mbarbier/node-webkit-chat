@@ -18,6 +18,7 @@ public class B {
     public static final String ROW = "row";
     public static final String LIST_GROUP = "list-group";
     public static final String LIST_GROUP_ITEM = "list-group-item";
+    public static final String BADGE = "badge";
 
     public static void setCollapse(final PWidget w, final String collapsableID) {
         w.setAttribute("data-toggle", "collapse");

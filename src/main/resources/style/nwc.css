@@ -14,3 +14,13 @@
 	margin-top: 5px;
 	margin-bottom: 5px;
 }
+
+.CONNECTED {
+	background-color: #3fb618;
+	cursor: pointer;
+}
+
+.AWAY{
+	background-color: #ff7518;
+	cursor: pointer;
+}
