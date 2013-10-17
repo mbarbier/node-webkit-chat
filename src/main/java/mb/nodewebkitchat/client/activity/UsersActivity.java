@@ -154,7 +154,7 @@ public class UsersActivity extends NWCActivity implements PClickHandler {
     }
 
     private void addEntry(final User user) {
-        if (me == null || me.name.equals(user.name)) return;
+        if (itsMe(user.name)) return;
 
         final PElement u = new PElement("li");
         u.setStyleName(B.LIST_GROUP_ITEM);
@@ -182,7 +182,7 @@ public class UsersActivity extends NWCActivity implements PClickHandler {
     }
 
     private void removeEntry(final User user) {
-        if (me == null || me.name.equals(user.name)) return;
+        if (itsMe(user.name)) return;
 
         final PWidget remove = entryByUser.remove(user.name);
         userContainer.remove(remove);
@@ -191,12 +191,17 @@ public class UsersActivity extends NWCActivity implements PClickHandler {
     }
 
     private void updateEntry(final User user, final Presence presence) {
-        if (me == null || me.name.equals(user.name)) return;
+        if (itsMe(user.name)) return;
 
         // Get the badge
         final PComplexPanel w = (PComplexPanel) entryByUser.get(user.name);
         final PWidget badge = w.getWidget(1);
         setPresence(badge, presence);
+    }
+
+    private boolean itsMe(final String name) {
+        if (me == null || me.name.equals(name)) return true;
+        return false;
     }
 
     private void setPresence(final PWidget presence, final Presence userPresence) {
@@ -221,9 +226,19 @@ public class UsersActivity extends NWCActivity implements PClickHandler {
         } else if (data instanceof UserPresenceEvent) {
             final UserPresenceEvent e = (UserPresenceEvent) data;
             updateEntry(e.getUser(), e.getPresence());
+            sendPresenceNotification(e.getUser(), e.getPresence());
         } else if (data instanceof NewCallEvent) {
             onCall();
         }
+    }
+
+    private void sendPresenceNotification(final User user, final Presence presence) {
+        if (itsMe(user.name)) return;
+        if (presence != Presence.CONNECTED) return;
+        final NodeWebkit nodeWebkit = NodeWebkit.get();
+        if (!nodeWebkit.isFunctional()) return;
+
+        nodeWebkit.notify("../images/bell.png", user.name, user.name + " is connected");
     }
 
     private void onCall() {

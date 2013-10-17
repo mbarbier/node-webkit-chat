@@ -47,5 +47,10 @@ mb.ui.NWProxy.prototype.update = function(data) {
 				});
 			});
 		}
+	} else if(data.notification) {
+		var icon = data.notification.icon;
+		var title = data.notification.title;
+		var content = data.notification.content;
+		window.LOCAL_NW.desktopNotifications.notify(icon, title, content, function(){});
 	}
 };

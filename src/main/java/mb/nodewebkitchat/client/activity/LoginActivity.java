@@ -3,6 +3,7 @@ package mb.nodewebkitchat.client.activity;
 
 import mb.nodewebkitchat.client.bootstrap.B;
 import mb.nodewebkitchat.client.place.LoggedPlace;
+import mb.nodewebkitchat.server.model.Presence;
 import mb.nodewebkitchat.server.model.User;
 
 import com.ponysdk.core.activity.Activity;
@@ -65,9 +66,11 @@ public class LoginActivity extends NWCActivity implements PClickHandler, Connect
         userName = login.getText();
         if (userName.isEmpty()) { return; }
 
+        final User user = new User(userName);
         service.logon(userName);
+        service.updateUserPresence(user, Presence.CONNECTED);
 
-        next.start(world, new LoggedPlace(new User(userName)));
+        next.start(world, new LoggedPlace(user));
     }
 
     @Override

@@ -52,7 +52,6 @@ public class NodeWebkit extends PHTML implements PNativeHandler {
     public void onNativeEvent(final PNativeEvent event) {
         try {
             final JSONObject jso = event.getJsonObject();
-            System.err.println("native: " + jso);
             if (jso.has("info")) {
                 final JSONObject info = jso.getJSONObject("info");
                 version = info.getString("nwversion");
@@ -63,6 +62,20 @@ public class NodeWebkit extends PHTML implements PNativeHandler {
                     win.onEvent(eventType, null);
                 }
             }
+        } catch (final JSONException e) {
+            log.error("", e);
+        }
+    }
+
+    public void notify(final String icon, final String title, final String content) {
+        try {
+            final JSONObject n = new JSONObject();
+            n.put("icon", icon);
+            n.put("title", title);
+            n.put("content", content);
+            final JSONObject j = new JSONObject();
+            j.put("notification", n);
+            sendToNative(j);
         } catch (final JSONException e) {
             log.error("", e);
         }
